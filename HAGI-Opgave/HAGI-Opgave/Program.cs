@@ -10,10 +10,7 @@ namespace HAGI_Opgave
     {
         static void Main(string[] args)
         {
-
-            // TEST snvehgher
-
-            // Test 2
+            // Test merge
         }
     }
 }
