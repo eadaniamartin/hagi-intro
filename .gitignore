@@ -1,1 +1,5 @@
 .vs
+
+// fjern buildfiler
+obj 
+bin
