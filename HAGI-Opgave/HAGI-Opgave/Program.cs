@@ -71,20 +71,55 @@ namespace HAGI_Opgave
 
         static void MartinsGame()
         {
-            Console.WriteLine("Martins spil");
+            Console.WriteLine("Martins Funhouse");
+            Console.WriteLine("1. Hangman (In progress)");
+            Console.WriteLine("2. MineSweeper (Not started)");
+            Console.WriteLine("3. Battleship (Not started)");
+            Console.WriteLine("4. Rock, Paper, Scissor (Not imported yet)");
+            Console.WriteLine("5. Tic-Tac-Toe (Not imported yet)");
+            Console.WriteLine("6. Exit");
 
             bool keepRunningMartinsGame = true;
 
+
+
             while(keepRunningMartinsGame)
             {
-                string response = Console.ReadLine();
-                if (response.Trim().ToLower() == "q") 
+                string menuResponse = Console.ReadLine().Trim();
+                bool menuResponseIsNumber = int.TryParse(menuResponse, out int menuResponseNumber);
+
+                if (menuResponseIsNumber) 
                 {
+                    switch(menuResponseNumber)
+                    {
+                        case 1:
+                            Console.Clear();
+                            MartinsGameHangman();
+                            break;
+                        case 2:
+                            Console.Clear();
+                            break;
+                        default:
+                            Console.WriteLine("Please pick a number on the list...");
+                            break;
+                    }
                     keepRunningMartinsGame = false;
                     Console.Clear();
                 }
+                else
+                {
+                    Console.WriteLine("Your input is not a valid number, please try again");
+                }
             }
 
+
         }
+        static void MartinsGameHangman()
+        {
+            
+            Console.Clear();
+            Console.WriteLine("Welcome to Hangman");
+        }
+
     }
 }
