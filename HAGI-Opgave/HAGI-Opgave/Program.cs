@@ -10,14 +10,16 @@ namespace HAGI_Opgave
     {
         static void Main(string[] args)
         {   
-            // HER KOMMER TEKST TIL MENUEN I KONSOLEN
-            Console.WriteLine("=== MENU ===");
-            Console.WriteLine("1. Marcus' Spil");
-            Console.WriteLine("2. Martins Spil");
             bool rigtigtSvar = false; 
             // Her kommer et while loop som vurderer om den indtastede værdi er korrekt eller falsk
             while (rigtigtSvar == false)
             {
+                // HER KOMMER TEKST TIL MENUEN I KONSOLEN
+                Console.WriteLine("=== MENU ===");
+                Console.WriteLine("1. Marcus' Spil");
+                Console.WriteLine("2. Martins Spil");
+
+                Console.WriteLine("3. Afslut programmet");
                 // VI GEMMER BRUGERENS RESPONS FRA KONSOLEN I EN STRING
                 string userResponse = Console.ReadLine();
                 // isNumber er en bool, som fortæller om TryParse af stringen userResponse kan laves til en integer, derudover får vi også en integer kaldet userResponseInteger
@@ -35,10 +37,15 @@ namespace HAGI_Opgave
                         case 2:
                             Console.Clear();
                             MartinsGame();
-                            rigtigtSvar = true;
+                           // rigtigtSvar = true;
                             break;
                         default:
                             Console.WriteLine("Tallet er ikke 1 eller 2");
+                            break;
+                        case 3:
+                            Console.Clear();
+                            Console.WriteLine("Programmet er slut");
+                            rigtigtSvar = true;
                             break;
                     }
                 }
@@ -53,23 +60,28 @@ namespace HAGI_Opgave
  
         static void MarcusGame()
         {
-            Console.WriteLine("Marcus spil");
-
+            // Gæt et tal
+            Console.WriteLine("Gæt et tal");
 
 
 
         }
 
+
+
         static void MartinsGame()
         {
             Console.WriteLine("Martins spil");
 
-            while(true)
+            bool keepRunningMartinsGame = true;
+
+            while(keepRunningMartinsGame)
             {
                 string response = Console.ReadLine();
-                if (true)
+                if (response.Trim().ToLower() == "q") 
                 {
-                    break;
+                    keepRunningMartinsGame = false;
+                    Console.Clear();
                 }
             }
 
