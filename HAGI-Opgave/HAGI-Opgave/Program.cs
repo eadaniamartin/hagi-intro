@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -444,7 +445,9 @@ namespace HAGI_Opgave
         {
             byte gameGridRows = 20;
             byte gameGridCols = 20;
-            byte gameAmountOfMines = 10;
+            ushort boardFieldsLeft = (ushort)(gameGridRows * gameGridCols);
+            ushort boardFieldsTaken = 0;
+            byte gameAmountOfMines = 30;
             bool gameIsDone = false;
             bool dead = false;
 
@@ -453,28 +456,38 @@ namespace HAGI_Opgave
             byte[,] gridValue = new byte[gameGridRows, gameGridCols];
 
             DistributeMinesEvenly(gridArrayBoard, gameAmountOfMines, gameGridRows, gameGridCols);
-            DrawMinesweeperBoard(gridArrayBoard);
+            DrawMinesweeperBoard(gridArrayBoard, boardFieldsLeft, boardFieldsTaken, gameAmountOfMines);
 
             while(!gameIsDone && !dead)
             {
                 var userCoordinate = PromptUserForRowAndCol(gameGridRows, gameGridCols);
                 bool positionIsVisible = CheckIfPositionIsAlreadyVisible(gridVisible, userCoordinate);
                 bool positionIsAMine = CheckIfPositionIsMine(gridArrayBoard, userCoordinate.row, userCoordinate.col);
+                boardFieldsLeft--;
+                boardFieldsTaken++;
                 if (!positionIsVisible && !positionIsAMine)
                 {
                     byte numberOfMinesAroundPosition = CheckSurroundingPositions(gridArrayBoard, userCoordinate.row, userCoordinate.col, gameGridRows, gameGridCols);
-                    RedrawMinesweeperBoard(gridArrayBoard, userCoordinate, numberOfMinesAroundPosition, gridVisible, gridValue, gameGridRows, gameGridCols, positionIsAMine);
+                    RedrawMinesweeperBoard(gridArrayBoard, userCoordinate, numberOfMinesAroundPosition, gridVisible, gridValue, gameGridRows, gameGridCols, positionIsAMine, boardFieldsLeft, boardFieldsTaken, gameAmountOfMines);
                 }
                 else if(positionIsAMine)
                 {
                     dead = true;
                     gameIsDone = true;
                     byte numberOfMinesAroundPosition = CheckSurroundingPositions(gridArrayBoard, userCoordinate.row, userCoordinate.col, gameGridRows, gameGridCols);
-                    RedrawMinesweeperBoard(gridArrayBoard, userCoordinate, numberOfMinesAroundPosition, gridVisible, gridValue, gameGridRows, gameGridCols, positionIsAMine);
+                    RedrawMinesweeperBoard(gridArrayBoard, userCoordinate, numberOfMinesAroundPosition, gridVisible, gridValue, gameGridRows, gameGridCols, positionIsAMine, boardFieldsLeft, boardFieldsTaken, gameAmountOfMines);
                     Console.WriteLine("You died!");
                     Console.WriteLine("Press any key to continue back to menu");
                     Console.ReadKey();
-                    
+                }
+                else if(boardFieldsLeft == gameAmountOfMines && dead == false)
+                {
+                    gameIsDone = true;
+                    byte numberOfMinesAroundPosition = CheckSurroundingPositions(gridArrayBoard, userCoordinate.row, userCoordinate.col, gameGridRows, gameGridCols);
+                    RedrawMinesweeperBoard(gridArrayBoard, userCoordinate, numberOfMinesAroundPosition, gridVisible, gridValue, gameGridRows, gameGridCols, positionIsAMine, boardFieldsLeft, boardFieldsTaken, gameAmountOfMines);
+                    Console.WriteLine("You won! Congratulations");
+                    Console.WriteLine("Press any key to continue back to menu");
+                    Console.ReadKey();
                 }
                 else
                 {
@@ -554,10 +567,13 @@ namespace HAGI_Opgave
             return (userRowNumber, userColNumber);
         }
 
-        static void DrawMinesweeperBoard(GridType[,] gridArrayBoard)
+        static void DrawMinesweeperBoard(GridType[,] gridArrayBoard, ushort fieldsLeft, ushort fieldsTaken, byte amountOfMines)
         {
             ConsoleColor originalConsoleBackgroundColor = Console.BackgroundColor;
             ConsoleColor originalConsoleForegroundColor = Console.ForegroundColor;
+            
+            Console.Write($"\n      Fields left: {fieldsLeft}       Fields taken: {fieldsTaken}       Mines: {amountOfMines}\n\n");
+
 
             for (int i = 0; i < gridArrayBoard.GetLength(0); i++)
             {
@@ -597,12 +613,14 @@ namespace HAGI_Opgave
         }
 
 
-        static void RedrawMinesweeperBoard(GridType[,] gridArrayBoard, (byte row, byte col) userCoordinate, byte positionNumber, bool[,] gridVisible, byte[,] gridValue, byte maxRowSize, byte maxColSize, bool positionIsAMine)
+        static void RedrawMinesweeperBoard(GridType[,] gridArrayBoard, (byte row, byte col) userCoordinate, byte positionNumber, bool[,] gridVisible, byte[,] gridValue, byte maxRowSize, byte maxColSize, bool positionIsAMine, ushort fieldsLeft, ushort fieldsTaken, byte amountOfMines)
         {
             ConsoleColor originalConsoleBackgroundColor = Console.BackgroundColor;
             ConsoleColor originalConsoleForegroundColor = Console.ForegroundColor;
 
             Console.Clear();
+
+            Console.Write($"\n      Fields left: {fieldsLeft}       Fields taken: {fieldsTaken}       Mines: {amountOfMines}\n\n");
             for (int i = 0; i < gridArrayBoard.GetLength(0); i++)
             {
                 if(i >= 10)
