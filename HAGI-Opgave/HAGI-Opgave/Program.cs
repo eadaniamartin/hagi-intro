@@ -439,7 +439,6 @@ namespace HAGI_Opgave
 
         static void MineSweeper()
         {
-            Random random = new Random();
             byte gameGridRows = 20;
             byte gameGridCols = 20;
             byte gameAmountOfMines = 10;
@@ -449,11 +448,7 @@ namespace HAGI_Opgave
             bool[,] gridVisible = new bool[gameGridRows, gameGridCols];
             byte[,] gridValue = new byte[gameGridRows, gameGridCols];
 
-
-            for (int i = 0; i < gameAmountOfMines; i++)
-            {
-                gridArrayBoard[random.Next(0, gameGridRows), random.Next(0, gameGridCols)] = GridType.Mine;
-            }
+            DistributeMinesEvenly(gridArrayBoard, gameAmountOfMines, gameGridRows, gameGridCols);
 
             DrawMineSweeperBoard(gridArrayBoard);
 
@@ -465,11 +460,8 @@ namespace HAGI_Opgave
                 bool isVisible = CheckIfPositionIsAlreadyVisible(gridVisible, userCoordinate);
                 if(!isVisible)
                 {
-                    Console.WriteLine($"Coordinate... Row: {userCoordinate.row}   Col: {userCoordinate.col}");
                     byte numberOfMinesAroundPosition = CheckSurroundingPositions(gridArrayBoard, userCoordinate.row, userCoordinate.col, gameGridRows, gameGridCols);
-                    Console.WriteLine($"WDJidjwaijdda {numberOfMinesAroundPosition}");
                     RedrawMineSweeperBoard(gridArrayBoard, userCoordinate, numberOfMinesAroundPosition, gridVisible, gridValue, gameGridRows, gameGridCols, dead);
-                    if(dead) { Console.WriteLine("You died"); }
                 }
                 else
                 {
@@ -479,10 +471,31 @@ namespace HAGI_Opgave
 
         }
 
+        static void DistributeMinesEvenly(GridType[,] board, byte amountOfMines, byte maxRows, byte maxCols)
+        {
+            Random random = new Random();
+            for (int i = 0; i < amountOfMines; i++)
+            {
+                while(true)
+                {
+                    byte randomRow = (byte)random.Next(0, maxRows);
+                    byte randomCol = (byte)random.Next(0, maxCols);
+
+                    if(!CheckIfPositionIsMine(board, randomRow, randomCol))
+                    {
+                        board[random.Next(0, (maxRows-1)), random.Next(0, (maxCols-1))] = GridType.Mine;
+                        break;
+                    }
+
+                }
+            }
+        }
+
         static (byte row, byte col) PromptUserForRowAndCol(byte rows, byte cols)
         {
             byte userRowNumber;
             byte userColNumber;
+
             while(true)
             {
                 Console.Write($"Row between 0-{(rows-1)}: ");
@@ -491,7 +504,7 @@ namespace HAGI_Opgave
                 
                 if (userRowResponseIsNumber)
                 {
-                    if (userRowNumber >= 0 & userRowNumber <= rows)
+                    if (userRowNumber >= 0 & userRowNumber <= (rows-1))
                     {
                         break;
                     }
@@ -512,7 +525,7 @@ namespace HAGI_Opgave
                 bool userColResponseIsNumber = byte.TryParse(userColResponse, out userColNumber);
                 if(userColResponseIsNumber)
                 {
-                    if(userColNumber >= 0 & userColNumber <= cols)
+                    if(userColNumber >= 0 & userColNumber <= (cols-1))
                     {
                         break;
                     }
@@ -609,18 +622,22 @@ namespace HAGI_Opgave
                                 Console.BackgroundColor = originalConsoleBackgroundColor;
                                 //dead = true; VALUE TYPE og ikke REFERENCE TYPE. Find anden løsning.
                             }
-                            else if (positionNumber == 0)
-                            {
-                                Console.BackgroundColor = ConsoleColor.White;
-                                Console.Write($"[-]");
-                                Console.BackgroundColor = originalConsoleBackgroundColor;
-                            }
                             else
                             {
-                            Console.BackgroundColor = ConsoleColor.Blue;
-                            Console.Write($"[{positionNumber}]");
-                            Console.BackgroundColor = originalConsoleBackgroundColor;
-                            }
+                                if (positionNumber == 0)
+                                {
+                                    Console.BackgroundColor = ConsoleColor.White;
+                                    Console.Write($"[-]");
+                                    Console.BackgroundColor = originalConsoleBackgroundColor;
+                                }
+                                else
+                                {
+                                    Console.BackgroundColor = ConsoleColor.Blue;
+                                    Console.Write($"[{positionNumber}]");
+                                    Console.BackgroundColor = originalConsoleBackgroundColor;
+                                }
+
+                            } 
                         }
                         else
                         {
@@ -684,88 +701,35 @@ namespace HAGI_Opgave
             return false;
         }
 
+        static bool IsInsideBounds(int row, int col, int maxRows, int maxCols)
+        {
+            return row >= 0 && row < maxRows && col >= 0 && col < maxCols;
+        }
+
+
         static byte CheckSurroundingPositions(GridType[,] gridArray, byte row, byte col, byte maxRowSize, byte maxColSize)
         {
-            byte amountOfSurroundingMines = 0;
+            byte countAmountOfMines = 0;
 
-            int upperRow = row - 1;
-            int lowerRow = row + 1;
-
-            int leftCol = col - 1;
-            int rightCol = col + 1;
-
-            bool isUpperRowAvailable = (upperRow > 0);
-            bool isLowerRowAvailable = (lowerRow <= maxRowSize);
-            bool isLeftColAvailable = (leftCol >= 0);
-            bool isRightColAvailable = (rightCol <= maxColSize);
-
-            int checksAmount = 0;
-
-            GridType[] checksArray = new GridType[8];
-
-            if (isUpperRowAvailable)
+            int[,] directions = new int[,]
             {
-                if (isLeftColAvailable)
-                {
-                    checksArray[checksAmount] = gridArray[upperRow, leftCol];   // ØVRE VENSTRE
-                    checksAmount++;
-                }
-                if (isRightColAvailable)
-                {
-                    checksArray[checksAmount] = gridArray[upperRow, rightCol];   // ØVRE HØJRE
-                    checksAmount++;
-                }
-                checksArray[checksAmount] = gridArray[(row - 1), (col)];       // ØVRE MIDT
-                checksAmount++;
-            }
+                {-1, -1}, {-1, 0}, {-1, 1},  // ØVRE ROW
+                { 0, -1},          { 0, 1},  // MIDT ROW
+                { 1, -1}, { 1, 0}, { 1, 1}   // NEDRE ROW
+            };
 
-            if (isLeftColAvailable)
+            for (int i = 0; i < directions.GetLength(0); i++)
             {
-                checksArray[checksAmount] = gridArray[(row), (col - 1)];       // MIDT VENSTRE
-                checksAmount++;
-            }
-            if (isRightColAvailable)
-            {
-                checksArray[checksAmount] = gridArray[(row), (col + 1)];       // MIDT HØJRE
-                checksAmount++;
-            }
-            if (isLowerRowAvailable)
-            {
-                if (isLeftColAvailable)
-                {
-                    checksArray[checksAmount] = gridArray[(row + 1), (col - 1)];   // NEDRE VENSTRE
-                    checksAmount++;
-                }
-                if (isRightColAvailable)
-                {
-                    checksArray[checksAmount] = gridArray[(row + 1), (col + 1)];   // NEDRE HØJRE
-                    checksAmount++;
-                }
-                checksArray[checksAmount] = gridArray[(row + 1), (col)];       // NEDRE MIDT
-                checksAmount++;
-            }
+                int newRow = row + directions[i, 0];
+                int newCol = col + directions[i, 1];
 
-            //checksArray[0] = gridArray[upperRow, leftCol];   // ØVRE VENSTRE
-            //checksArray[1] = gridArray[upperRow, col];       // ØVRE MIDT
-            //checksArray[2] = gridArray[upperRow, rightCol];   // ØVRE HØJRE
-            //checksArray[3] = gridArray[row, leftCol];       // MIDT VENSTRE
-            ////GridType upperleft = gridArray[(row), (col)];        SAMME KOORDINAT
-            //checksArray[4] = gridArray[row, rightCol];       // MIDT HØJRE
-            //checksArray[5] = gridArray[lowerRow, leftCol];   // NEDRE VENSTRE
-            //checksArray[6] = gridArray[lowerRow, col];       // NEDRE MIDT
-            //checksArray[7] = gridArray[lowerRow, rightCol];   // NEDRE HØJRE
-
-            for (int i = 0; i < 8; i++)
-            {
-                //Console.WriteLine(checksArray[i]);
-                //Console.ForegroundColor = ConsoleColor.Red;
-                if (checksArray[i] == GridType.Mine)
+                if (IsInsideBounds(newRow, newCol, maxRowSize, maxColSize))
                 {
-                    amountOfSurroundingMines++;
+                    if (gridArray[newRow, newCol] == GridType.Mine)
+                        countAmountOfMines++;
                 }
             }
-
-            return amountOfSurroundingMines;
+            return countAmountOfMines;
         }
 
         static void MartinsGameHangmanDrawWordPlacings(string word)
