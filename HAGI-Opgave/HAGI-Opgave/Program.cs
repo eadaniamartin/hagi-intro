@@ -508,7 +508,7 @@ namespace HAGI_Opgave
 
                     if(!CheckIfPositionIsMine(board, randomRow, randomCol))
                     {
-                        board[random.Next(0, (maxRows-1)), random.Next(0, (maxCols-1))] = GridType.Mine;
+                        board[random.Next(0, randomRow), random.Next(0, randomCol)] = GridType.Mine;
                         break;
                     }
 
