@@ -288,6 +288,9 @@ namespace HAGI_Opgave
 
         static void MartinsGame()
         {
+            bool keepRunningMartinsGame = true;
+            while (keepRunningMartinsGame)
+            {
             ConsoleColor originalConsoleForegroundColor = Console.ForegroundColor;
             ConsoleColor originalConsoleBackgroundColor = Console.BackgroundColor;
 
@@ -304,11 +307,8 @@ namespace HAGI_Opgave
             Console.ForegroundColor = originalConsoleForegroundColor;
             Console.WriteLine("| 6. Exit");
 
-            bool keepRunningMartinsGame = true;
 
 
-            while (keepRunningMartinsGame)
-            {
                 string menuResponse = Console.ReadLine().Trim();
                 bool menuResponseIsNumber = int.TryParse(menuResponse, out int menuResponseNumber);
 
@@ -323,6 +323,15 @@ namespace HAGI_Opgave
                             case 2:
                                 Console.Clear();
                                 MineSweeper();
+                                break;
+                            case 3:
+                                break;
+                            case 4:
+                                break;
+                            case 5:
+                                break;
+                            case 6:
+                                keepRunningMartinsGame = false;
                                 break;
                             default:
                                 Console.WriteLine("Please pick a number on the list...");
@@ -436,6 +445,7 @@ namespace HAGI_Opgave
             byte gameGridRows = 20;
             byte gameGridCols = 20;
             byte gameAmountOfMines = 10;
+            bool gameIsDone = false;
             bool dead = false;
 
             GridType[,] gridArrayBoard = new GridType[gameGridRows, gameGridCols];
@@ -443,26 +453,34 @@ namespace HAGI_Opgave
             byte[,] gridValue = new byte[gameGridRows, gameGridCols];
 
             DistributeMinesEvenly(gridArrayBoard, gameAmountOfMines, gameGridRows, gameGridCols);
-
-            DrawMineSweeperBoard(gridArrayBoard);
-
-            bool gameIsDone = false;
+            DrawMinesweeperBoard(gridArrayBoard);
 
             while(!gameIsDone && !dead)
             {
                 var userCoordinate = PromptUserForRowAndCol(gameGridRows, gameGridCols);
-                bool isVisible = CheckIfPositionIsAlreadyVisible(gridVisible, userCoordinate);
-                if(!isVisible)
+                bool positionIsVisible = CheckIfPositionIsAlreadyVisible(gridVisible, userCoordinate);
+                bool positionIsAMine = CheckIfPositionIsMine(gridArrayBoard, userCoordinate.row, userCoordinate.col);
+                if (!positionIsVisible && !positionIsAMine)
                 {
                     byte numberOfMinesAroundPosition = CheckSurroundingPositions(gridArrayBoard, userCoordinate.row, userCoordinate.col, gameGridRows, gameGridCols);
-                    RedrawMineSweeperBoard(gridArrayBoard, userCoordinate, numberOfMinesAroundPosition, gridVisible, gridValue, gameGridRows, gameGridCols, dead);
+                    RedrawMinesweeperBoard(gridArrayBoard, userCoordinate, numberOfMinesAroundPosition, gridVisible, gridValue, gameGridRows, gameGridCols, positionIsAMine);
+                }
+                else if(positionIsAMine)
+                {
+                    dead = true;
+                    gameIsDone = true;
+                    byte numberOfMinesAroundPosition = CheckSurroundingPositions(gridArrayBoard, userCoordinate.row, userCoordinate.col, gameGridRows, gameGridCols);
+                    RedrawMinesweeperBoard(gridArrayBoard, userCoordinate, numberOfMinesAroundPosition, gridVisible, gridValue, gameGridRows, gameGridCols, positionIsAMine);
+                    Console.WriteLine("You died!");
+                    Console.WriteLine("Press any key to continue back to menu");
+                    Console.ReadKey();
+                    
                 }
                 else
                 {
                     Console.WriteLine("Please choose a position that hasn't been chosen before");
                 }
             }
-
         }
 
         static void DistributeMinesEvenly(GridType[,] board, byte amountOfMines, byte maxRows, byte maxCols)
@@ -536,7 +554,7 @@ namespace HAGI_Opgave
             return (userRowNumber, userColNumber);
         }
 
-        static void DrawMineSweeperBoard(GridType[,] gridArrayBoard)
+        static void DrawMinesweeperBoard(GridType[,] gridArrayBoard)
         {
             ConsoleColor originalConsoleBackgroundColor = Console.BackgroundColor;
             ConsoleColor originalConsoleForegroundColor = Console.ForegroundColor;
@@ -579,7 +597,7 @@ namespace HAGI_Opgave
         }
 
 
-        static void RedrawMineSweeperBoard(GridType[,] gridArrayBoard, (byte row, byte col) userCoordinate, byte positionNumber, bool[,] gridVisible, byte[,] gridValue, byte maxRowSize, byte maxColSize, bool dead)
+        static void RedrawMinesweeperBoard(GridType[,] gridArrayBoard, (byte row, byte col) userCoordinate, byte positionNumber, bool[,] gridVisible, byte[,] gridValue, byte maxRowSize, byte maxColSize, bool positionIsAMine)
         {
             ConsoleColor originalConsoleBackgroundColor = Console.BackgroundColor;
             ConsoleColor originalConsoleForegroundColor = Console.ForegroundColor;
@@ -606,12 +624,11 @@ namespace HAGI_Opgave
                         gridValue[i, j] = CheckSurroundingPositions(gridArrayBoard, userCoordinate.row, userCoordinate.col, maxRowSize, maxColSize);
                         gridVisible[i, j] = true;
 
-                        if (isPositionAMine)
+                        if (positionIsAMine)
                         {
                             Console.BackgroundColor = ConsoleColor.Red;
                             Console.Write("[B]");
                             Console.BackgroundColor = originalConsoleBackgroundColor;
-                            //dead = true; VALUE TYPE og ikke REFERENCE TYPE. Find anden løsning.
                         }
                         else
                         {
