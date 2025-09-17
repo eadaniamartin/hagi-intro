@@ -431,12 +431,6 @@ namespace HAGI_Opgave
             Mine
         }
 
-        enum GridVisibility
-        {
-            Invisible,
-            Visible,
-        }
-
         static void MineSweeper()
         {
             byte gameGridRows = 20;
@@ -593,78 +587,75 @@ namespace HAGI_Opgave
             Console.Clear();
             for (int i = 0; i < gridArrayBoard.GetLength(0); i++)
             {
-
                 if(i >= 10)
                 {
                     Console.Write($" {i}   ");
-
                 }
                 else
                 {
                     Console.Write($" {i}    ");
                 }
-                    Console.ForegroundColor = ConsoleColor.Black;
-                    
-                    for (int j = 0; j < gridArrayBoard.GetLength(1); j++)
+                Console.ForegroundColor = ConsoleColor.Black;                 
+                for (int j = 0; j < gridArrayBoard.GetLength(1); j++)
+                {
+
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    if (i == userCoordinate.row && j == userCoordinate.col)
                     {
+                        bool isPositionAMine = CheckIfPositionIsMine(gridArrayBoard, userCoordinate.row, userCoordinate.col);
+                        gridValue[i, j] = CheckSurroundingPositions(gridArrayBoard, userCoordinate.row, userCoordinate.col, maxRowSize, maxColSize);
+                        gridVisible[i, j] = true;
 
-                        Console.BackgroundColor = ConsoleColor.Black;
-                        if (i == userCoordinate.row && j == userCoordinate.col)
+                        if (isPositionAMine)
                         {
-                            bool isPositionAMine = CheckIfPositionIsMine(gridArrayBoard, userCoordinate.row, userCoordinate.col);
-                            gridValue[i, j] = CheckSurroundingPositions(gridArrayBoard, userCoordinate.row, userCoordinate.col, maxRowSize, maxColSize);
-                            gridVisible[i, j] = true;
-
-                            if (isPositionAMine)
-                            {
-                                Console.BackgroundColor = ConsoleColor.Red;
-                                Console.Write("[B]");
-                                Console.BackgroundColor = originalConsoleBackgroundColor;
-                                //dead = true; VALUE TYPE og ikke REFERENCE TYPE. Find anden løsning.
-                            }
-                            else
-                            {
-                                if (positionNumber == 0)
-                                {
-                                    Console.BackgroundColor = ConsoleColor.White;
-                                    Console.Write($"[-]");
-                                    Console.BackgroundColor = originalConsoleBackgroundColor;
-                                }
-                                else
-                                {
-                                    Console.BackgroundColor = ConsoleColor.Blue;
-                                    Console.Write($"[{positionNumber}]");
-                                    Console.BackgroundColor = originalConsoleBackgroundColor;
-                                }
-
-                            } 
+                            Console.BackgroundColor = ConsoleColor.Red;
+                            Console.Write("[B]");
+                            Console.BackgroundColor = originalConsoleBackgroundColor;
+                            //dead = true; VALUE TYPE og ikke REFERENCE TYPE. Find anden løsning.
                         }
                         else
                         {
-                            if (gridVisible[i, j] == true)
+                            if (positionNumber == 0)
                             {
-                                if (gridValue[i, j] == 0)
-                                {
-                                    Console.BackgroundColor = ConsoleColor.White;
-                                    Console.Write("[-]");
-                                    Console.BackgroundColor = originalConsoleBackgroundColor;
-                                }
-                                else
-                                {
-                                    Console.BackgroundColor = ConsoleColor.Blue;
-                                    Console.Write($"[{gridValue[i, j]}]");
-                                    Console.BackgroundColor = originalConsoleBackgroundColor;
-
-                                }
+                                Console.BackgroundColor = ConsoleColor.White;
+                                Console.Write($"[-]");
+                                Console.BackgroundColor = originalConsoleBackgroundColor;
                             }
                             else
                             {
-                                Console.BackgroundColor = ConsoleColor.Gray;
-                                Console.Write("[ ]");
-                                Console.BackgroundColor = originalConsoleBackgroundColor;    
+                                Console.BackgroundColor = ConsoleColor.Blue;
+                                Console.Write($"[{positionNumber}]");
+                                Console.BackgroundColor = originalConsoleBackgroundColor;
+                            }
+
+                        } 
+                    }
+                    else
+                    {
+                        if (gridVisible[i, j] == true)
+                        {
+                            if (gridValue[i, j] == 0)
+                            {
+                                Console.BackgroundColor = ConsoleColor.White;
+                                Console.Write("[-]");
+                                Console.BackgroundColor = originalConsoleBackgroundColor;
+                            }
+                            else
+                            {
+                                Console.BackgroundColor = ConsoleColor.Blue;
+                                Console.Write($"[{gridValue[i, j]}]");
+                                Console.BackgroundColor = originalConsoleBackgroundColor;
+
                             }
                         }
+                        else
+                        {
+                            Console.BackgroundColor = ConsoleColor.Gray;
+                            Console.Write("[ ]");
+                            Console.BackgroundColor = originalConsoleBackgroundColor;    
+                        }
                     }
+                }
                 Console.Write("\n");
                 Console.ForegroundColor = originalConsoleForegroundColor;
             }
