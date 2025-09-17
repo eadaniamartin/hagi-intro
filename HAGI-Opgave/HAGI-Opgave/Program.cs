@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,8 +11,8 @@ namespace HAGI_Opgave
     internal class Program
     {
         static void Main(string[] args)
-        {   
-            bool rigtigtSvar = false; 
+        {
+            bool rigtigtSvar = false;
             // Her kommer et while loop som vurderer om den indtastede værdi er korrekt eller falsk
             while (rigtigtSvar == false)
             {
@@ -32,12 +34,12 @@ namespace HAGI_Opgave
                         case 1:
                             Console.Clear();
                             MarcusGame();
-                            rigtigtSvar = true;
+                            // rigtigtSvar = true;
                             break;
                         case 2:
                             Console.Clear();
                             MartinsGame();
-                           // rigtigtSvar = true;
+                            // rigtigtSvar = true;
                             break;
                         default:
                             Console.WriteLine("Tallet er ikke 1 eller 2");
@@ -50,23 +52,129 @@ namespace HAGI_Opgave
                     }
                 }
                 // Her er en else statement som køres hvis det ikke er et tal
-                else {
+                else
+                {
                     Console.WriteLine("Beklager, dit input er ikke et tal");
-                
+
                 }
             }
 
         }
- 
+
         static void MarcusGame()
         {
-            // Gæt et tal
-            Console.WriteLine("Gæt et tal");
 
+            bool keepRunningMarcusGame = true;
+
+            while (keepRunningMarcusGame)
+            {
+                Console.WriteLine("=== GÆT ET TAL ===");
+                Console.WriteLine("Vælg mellem 3 sværhedsgrader");
+                Console.WriteLine("1. = 1-20 =");
+                Console.WriteLine("2. = 1-50 =");
+                Console.WriteLine("3. = 1-100 =");
+                Console.WriteLine("4. Gå til menu");
+
+                string userResponse = Console.ReadLine();
+                bool response = int.TryParse(userResponse, out int responseInteger);
+
+                if (response == true)
+                {
+                    switch (responseInteger)
+                    {
+                        case 1:
+                            Console.Clear();
+                            FirstDifficultyMarcusGame();
+                            break;
+                        case 2:
+                            Console.Clear();
+                            SecondDifficultyMarcusGame();
+                            break;
+                        case 3:
+                            Console.Clear();
+                            ThirdDifficultyMarcusGame();
+                            break;
+                        case 4:
+                            keepRunningMarcusGame = false;
+                            Console.Clear();
+                            break;
+                        default:
+                            Console.WriteLine("Beklager, dit input er ikke en valgmulighed");
+                            break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Beklager, dit input er ikke en valgmulighed");
+                }
+
+            }
 
 
         }
 
+        static void FirstDifficultyMarcusGame()
+        {
+            Random random = new Random();
+            int randomNumber = random.Next(1, 21);
+            string userGuess;
+            int maxTries = 7;
+            int tries = 0;
+
+
+            bool isCorrect = false;
+
+            while (isCorrect == false) 
+            {
+                Console.WriteLine($"Du har {maxTries} forsøg. Du har brugt {tries} forsøg");
+                Console.WriteLine(" = Gæt et tal mellem 1-20 = ");
+                userGuess = Console.ReadLine();
+                bool userInput= int.TryParse(userGuess, out int userGuessInteger);
+
+                if (userGuessInteger == randomNumber)
+                {
+                    Console.Clear();
+                    Console.WriteLine(" ==== TILLYKKE DU HAR VUNDET ==== ");
+                    isCorrect = true;
+                }
+                else if (userGuessInteger < randomNumber)
+                {
+                    Console.WriteLine("Dit gæt er for lavt");
+                }
+                else if (userGuessInteger > randomNumber)
+                {
+                    Console.WriteLine("Dit gæt er for højt");
+                }
+                if (isCorrect == false)
+                {
+                    tries++;
+                }
+                if (maxTries == tries)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Du har tabt");
+                    break;
+                }
+
+            }
+            Console.WriteLine("Tryk på valgfri knap for at vende tilbage til menu");
+            Console.ReadKey();
+            Console.Clear();
+
+
+        }
+
+        static void SecondDifficultyMarcusGame()
+        {
+            Console.WriteLine(" = Gæt et tal mellem 1-50 = ");
+            Console.ReadLine();
+        }
+
+        static void ThirdDifficultyMarcusGame()
+        {
+            Console.WriteLine(" = Gæt et tal mellem 1-100 = ");
+            Console.ReadLine();
+        }
 
 
         static void MartinsGame()
@@ -83,37 +191,44 @@ namespace HAGI_Opgave
             bool keepRunningMartinsGame = true;
 
 
-            while(keepRunningMartinsGame)
+            while (keepRunningMartinsGame)
             {
                 string menuResponse = Console.ReadLine().Trim();
                 bool menuResponseIsNumber = int.TryParse(menuResponse, out int menuResponseNumber);
 
-                if (menuResponseIsNumber) 
-                {
-                    switch(menuResponseNumber)
+                if (menuResponseIsNumber)
+
+                    while (keepRunningMartinsGame)
                     {
-                        case 1:
+                        string response = Console.ReadLine();
+                        if (response.Trim().ToLower() == "q")
+
+                        {
+                            switch (menuResponseNumber)
+                            {
+                                case 1:
+                                    Console.Clear();
+                                    MartinsGameHangman();
+                                    break;
+                                case 2:
+                                    Console.Clear();
+                                    MineSweeper();
+                                    break;
+                                default:
+                                    Console.WriteLine("Please pick a number on the list...");
+                                    break;
+                            }
+                            keepRunningMartinsGame = false;
                             Console.Clear();
-                            MartinsGameHangman();
-                            break;
-                        case 2:
-                            Console.Clear();
-                            MineSweeper();
-                            break;
-                        default:
-                            Console.WriteLine("Please pick a number on the list...");
-                            break;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Your input is not a valid number, please try again");
+                        }
                     }
-                    keepRunningMartinsGame = false;
-                    Console.Clear();
-                }
-                else
-                {
-                    Console.WriteLine("Your input is not a valid number, please try again");
-                }
+
+
             }
-
-
         }
 
         static void MartinsGameHangman()
