@@ -292,23 +292,21 @@ namespace HAGI_Opgave
             bool keepRunningMartinsGame = true;
             while (keepRunningMartinsGame)
             {
-            ConsoleColor originalConsoleForegroundColor = Console.ForegroundColor;
-            ConsoleColor originalConsoleBackgroundColor = Console.BackgroundColor;
+                ConsoleColor originalConsoleForegroundColor = Console.ForegroundColor;
+                ConsoleColor originalConsoleBackgroundColor = Console.BackgroundColor;
 
-            Console.WriteLine("| Martins Funhouse");
-            Console.WriteLine("|------------------------------------------------");
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("| 1. Hangman (Gul - Under udvikling)");
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("| 2. Minesweeper (Rød - Færdig)");
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("| 3. Battleship (Gul - Under udvikling)");
-            Console.WriteLine("| 4. Rock, Paper, Scissor (Gul - Under udvikling)");
-            Console.WriteLine("| 5. Tic-Tac-Toe (Gul - Under udvikling)");
-            Console.ForegroundColor = originalConsoleForegroundColor;
-            Console.WriteLine("| 6. Exit");
-
-
+                Console.WriteLine("| Martins Funhouse");
+                Console.WriteLine("|------------------------------------------------");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("| 1. Hangman (Gul - Under udvikling)");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("| 2. Minesweeper (Rød - Færdig)");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("| 3. Battleship (Gul - Under udvikling)");
+                Console.WriteLine("| 4. Rock, Paper, Scissor (Gul - Under udvikling)");
+                Console.WriteLine("| 5. Tic-Tac-Toe (Gul - Under udvikling)");
+                Console.ForegroundColor = originalConsoleForegroundColor;
+                Console.WriteLine("| 6. Exit");
 
                 string menuResponse = Console.ReadLine().Trim();
                 bool menuResponseIsNumber = int.TryParse(menuResponse, out int menuResponseNumber);
@@ -338,16 +336,12 @@ namespace HAGI_Opgave
                                 Console.WriteLine("Please pick a number on the list...");
                                 break;
                         }
-                        //keepRunningMartinsGame = false;
                         Console.Clear();
-                 
                 }
                 else
                 {
                     Console.WriteLine("Your input is not a valid number, please try again");
                 }
-
-
             }
         }
 
@@ -463,6 +457,12 @@ namespace HAGI_Opgave
                 var userCoordinate = PromptUserForRowAndCol(gameGridRows, gameGridCols);
                 bool positionIsVisible = CheckIfPositionIsAlreadyVisible(gridVisible, userCoordinate);
                 bool positionIsAMine = CheckIfPositionIsMine(gridArrayBoard, userCoordinate.row, userCoordinate.col);
+
+                // abstracted for at separere logik fra redraw funktionen.
+                SetGridPositionValue(gridArrayBoard, gridValue, userCoordinate.row, userCoordinate.col, gameGridRows, gameGridCols);
+                // også abstracted fra redraw.
+                SetGridPositionVisibility(gridVisible, true, userCoordinate.row, userCoordinate.col);
+
                 boardFieldsLeft--;
                 boardFieldsTaken++;
                 if (!positionIsVisible && !positionIsAMine)
@@ -508,7 +508,7 @@ namespace HAGI_Opgave
 
                     if(!CheckIfPositionIsMine(board, randomRow, randomCol))
                     {
-                        board[random.Next(0, randomRow), random.Next(0, randomCol)] = GridType.Mine;
+                        board[randomRow,randomCol] = GridType.Mine;
                         break;
                     }
 
@@ -612,6 +612,15 @@ namespace HAGI_Opgave
             Console.Write("\n");
         }
 
+        static void SetGridPositionValue(GridType[,] board, byte[,] gridValue, byte row, byte col, byte maxRowSize, byte maxColSize)
+        {
+            gridValue[row, col] = CheckSurroundingPositions(board, row, col, maxRowSize, maxColSize);
+        }
+
+        static void SetGridPositionVisibility(bool[,] gridVisible, bool b, byte row, byte col)
+        {
+            gridVisible[row, col] = b;
+        }
 
         static void RedrawMinesweeperBoard(GridType[,] gridArrayBoard, (byte row, byte col) userCoordinate, byte positionNumber, bool[,] gridVisible, byte[,] gridValue, byte maxRowSize, byte maxColSize, bool positionIsAMine, ushort fieldsLeft, ushort fieldsTaken, byte amountOfMines)
         {
@@ -638,10 +647,6 @@ namespace HAGI_Opgave
                     Console.BackgroundColor = ConsoleColor.Black;
                     if (i == userCoordinate.row && j == userCoordinate.col)
                     {
-                        bool isPositionAMine = CheckIfPositionIsMine(gridArrayBoard, userCoordinate.row, userCoordinate.col);
-                        gridValue[i, j] = CheckSurroundingPositions(gridArrayBoard, userCoordinate.row, userCoordinate.col, maxRowSize, maxColSize);
-                        gridVisible[i, j] = true;
-
                         if (positionIsAMine)
                         {
                             Console.BackgroundColor = ConsoleColor.Red;
