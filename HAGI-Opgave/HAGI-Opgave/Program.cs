@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Security.Cryptography;
@@ -118,7 +119,7 @@ namespace HAGI_Opgave
             Random random = new Random();
             int randomNumber = random.Next(1, 21);
             string userGuess;
-            int maxTries = 7;
+            int maxTries = 5;
             int tries = 0;
 
 
@@ -131,29 +132,37 @@ namespace HAGI_Opgave
                 userGuess = Console.ReadLine();
                 bool userInput= int.TryParse(userGuess, out int userGuessInteger);
 
-                if (userGuessInteger == randomNumber)
+                if (userInput == true)
                 {
-                    Console.Clear();
-                    Console.WriteLine(" ==== TILLYKKE DU HAR VUNDET ==== ");
-                    isCorrect = true;
+                    if (userGuessInteger == randomNumber)
+                    {
+                        Console.Clear();
+                        Console.WriteLine(" ==== TILLYKKE DU HAR VUNDET ==== ");
+                        isCorrect = true;
+                    }
+                    else if (userGuessInteger < randomNumber)
+                    {
+                        Console.WriteLine("Dit gæt er for lavt");
+                    }
+                    else if (userGuessInteger > randomNumber)
+                    {
+                        Console.WriteLine("Dit gæt er for højt");
+                    }
+                    if (isCorrect == false)
+                    {
+                        tries++;
+                    }
+                    if (maxTries == tries)
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Du har tabt");
+                        break;
+                    }
+
                 }
-                else if (userGuessInteger < randomNumber)
+                else if (userInput == false)
                 {
-                    Console.WriteLine("Dit gæt er for lavt");
-                }
-                else if (userGuessInteger > randomNumber)
-                {
-                    Console.WriteLine("Dit gæt er for højt");
-                }
-                if (isCorrect == false)
-                {
-                    tries++;
-                }
-                if (maxTries == tries)
-                {
-                    Console.Clear();
-                    Console.WriteLine("Du har tabt");
-                    break;
+                    Console.WriteLine("Du skal skrive et tal");
                 }
 
             }
@@ -166,14 +175,114 @@ namespace HAGI_Opgave
 
         static void SecondDifficultyMarcusGame()
         {
-            Console.WriteLine(" = Gæt et tal mellem 1-50 = ");
-            Console.ReadLine();
+            Random random = new Random();
+            int randomNumber = random.Next(1, 51);
+            string userGuess;
+            int maxTries = 10;
+            int tries = 0;
+
+
+            bool isCorrect = false;
+
+            while (isCorrect == false)
+            {
+                Console.WriteLine($"Du har {maxTries} forsøg. Du har brugt {tries} forsøg");
+                Console.WriteLine(" = Gæt et tal mellem 1-50 = ");
+                userGuess = Console.ReadLine();
+                bool userInput = int.TryParse(userGuess, out int userGuessInteger);
+
+                if (userInput == true)
+                {
+                    if (userGuessInteger == randomNumber)
+                    {
+                        Console.Clear();
+                        Console.WriteLine(" ==== TILLYKKE DU HAR VUNDET ==== ");
+                        isCorrect = true;
+                    }
+                    else if (userGuessInteger < randomNumber)
+                    {
+                        Console.WriteLine("Dit gæt er for lavt");
+                    }
+                    else if (userGuessInteger > randomNumber)
+                    {
+                        Console.WriteLine("Dit gæt er for højt");
+                    }
+                    if (isCorrect == false)
+                    {
+                        tries++;
+                    }
+                    if (maxTries == tries)
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Du har tabt");
+                        break;
+                    }
+                }
+                else if (userInput == false)
+                {
+                    Console.WriteLine("Du skal skrive et tal");
+                }
+
+            }
+            Console.WriteLine("Tryk på valgfri knap for at vende tilbage til menu");
+            Console.ReadKey();
+            Console.Clear();
         }
 
         static void ThirdDifficultyMarcusGame()
         {
-            Console.WriteLine(" = Gæt et tal mellem 1-100 = ");
-            Console.ReadLine();
+            Random random = new Random();
+            int randomNumber = random.Next(1, 101);
+            string userGuess;
+            int maxTries = 15;
+            int tries = 0;
+
+
+            bool isCorrect = false;
+
+            while (isCorrect == false)
+            {
+                Console.WriteLine($"Du har {maxTries} forsøg. Du har brugt {tries} forsøg");
+                Console.WriteLine(" = Gæt et tal mellem 1-100 = ");
+                userGuess = Console.ReadLine();
+                bool userInput = int.TryParse(userGuess, out int userGuessInteger);
+
+                if (userInput == true)
+                {
+                    if (userGuessInteger == randomNumber)
+                    {
+                        Console.Clear();
+                        Console.WriteLine(" ==== TILLYKKE DU HAR VUNDET ==== ");
+                        isCorrect = true;
+                    }
+                    else if (userGuessInteger < randomNumber)
+                    {
+                        Console.WriteLine("Dit gæt er for lavt");
+                    }
+                    else if (userGuessInteger > randomNumber)
+                    {
+                        Console.WriteLine("Dit gæt er for højt");
+                    }
+                    if (isCorrect == false)
+                    {
+                        tries++;
+                    }
+                    if (maxTries == tries)
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Du har tabt");
+                        break;
+                    }
+                }
+                else if (userInput == false)
+                {
+                    Console.WriteLine("Du skal skrive et tal");
+                }
+
+            }
+            Console.WriteLine("Tryk på valgfri knap for at vende tilbage til menu");
+            Console.ReadKey();
+            Console.Clear();
         }
 
 
