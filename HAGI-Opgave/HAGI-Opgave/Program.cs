@@ -14,9 +14,11 @@ namespace HAGI_Opgave
     {
         static void Main(string[] args)
         {
-            bool rigtigtSvar = false;
+            // Fælles kodedel
+
+            bool stopProgrammet = false;
             // Her kommer et while loop som vurderer om den indtastede værdi er korrekt eller falsk
-            while (rigtigtSvar == false)
+            while (stopProgrammet == false)
             {
                 // HER KOMMER TEKST TIL MENUEN I KONSOLEN
                 Console.WriteLine("=== MENU ===");
@@ -36,12 +38,10 @@ namespace HAGI_Opgave
                         case 1:
                             Console.Clear();
                             MarcusGame();
-                            // rigtigtSvar = true;
                             break;
                         case 2:
                             Console.Clear();
                             MartinsGame();
-                            // rigtigtSvar = true;
                             break;
                         default:
                             Console.WriteLine("Tallet er ikke 1 eller 2");
@@ -49,7 +49,7 @@ namespace HAGI_Opgave
                         case 3:
                             Console.Clear();
                             Console.WriteLine("Programmet er slut");
-                            rigtigtSvar = true;
+                            stopProgrammet = true;
                             break;
                     }
                 }
@@ -63,11 +63,17 @@ namespace HAGI_Opgave
 
         }
 
+
+
+        // Kommentarer til Marcus kodedel
+
+        // Her er MarcusGame som er den funktion der kører mit spils menu, når den bliver kaldt oppe i den fælles menu
+        // Heri er der mulighed for at vælge mellem 3 forskellige sværhedsgrader som hver især består af en funktion der bliver kaldt gennem menuen
         static void MarcusGame()
         {
 
             bool keepRunningMarcusGame = true;
-
+            // Her er et while loop der køres når keepRunningMarcusGame er true, hvilket bruges til at holde menuen og spillet igang indtil brugeren afslutter
             while (keepRunningMarcusGame)
             {
                 Console.WriteLine("=== GÆT ET TAL ===");
@@ -76,14 +82,16 @@ namespace HAGI_Opgave
                 Console.WriteLine("2. = 1-50 =");
                 Console.WriteLine("3. = 1-100 =");
                 Console.WriteLine("4. Gå til menu");
-
+                // Her har jeg sat spillerens indput til at blive gemt i stringen userResponse
                 string userResponse = Console.ReadLine();
+                // Her bruger jeg stringen userResponse for at konvertere indputtet til en integer gemt i responseInteger.
+                // Derudover får vi en sand eller falsk værdi på om konverteringen er lykkedes, og gemmes i response af typen bool 
                 bool response = int.TryParse(userResponse, out int responseInteger);
-
+                // Her er en if statement som kører en switch case hvis den førnævnte konvertering lykkedes
                 if (response == true)
-                {
+                {   // Her er en switch case som sammenligner brugerens indput med de muligheder der er stillet til rådighed i menuen, sådan at programmet kan køre brugerens valg
                     switch (responseInteger)
-                    {
+                    {   // Her er case 1-3 som fører brugeren hen til den valgte sværhedsgrad når de bliver aktiveret
                         case 1:
                             Console.Clear();
                             FirstDifficultyMarcusGame();
@@ -96,16 +104,16 @@ namespace HAGI_Opgave
                             Console.Clear();
                             ThirdDifficultyMarcusGame();
                             break;
-                        case 4:
+                        case 4: // Her er case 4 som ændrer keepRunningMarcusGame til false og dermed afslutter while loopet således at brugeren bliver sendt tilbage til hovedmenuen
                             keepRunningMarcusGame = false;
                             Console.Clear();
                             break;
-                        default:
+                        default: // Her er en default som håndterer alt det indput som ikke aktiverer case 1-4 
                             Console.WriteLine("Beklager, dit input er ikke en valgmulighed");
                             break;
                     }
                 }
-                else
+                else // Her er else der kører hvis konverteringen fra string til int ikke lykkedes 
                 {
                     Console.WriteLine("Beklager, dit input er ikke en valgmulighed");
                 }
@@ -116,7 +124,7 @@ namespace HAGI_Opgave
         }
 
         static void FirstDifficultyMarcusGame()
-        {
+        {   // Her er sværhedsgradens primære variabler
             Random random = new Random();
             int randomNumber = random.Next(1, 21);
             string userGuess;
@@ -125,48 +133,56 @@ namespace HAGI_Opgave
 
 
             bool isCorrect = false;
-
+            // Her er et while loop som sørger for at så længe der kommer forkert svar fra spilleren, så kører den igen
             while (isCorrect == false) 
             {
                 Console.WriteLine($"Du har {maxTries} forsøg. Du har brugt {tries} forsøg");
                 Console.WriteLine(" = Gæt et tal mellem 1-20 = ");
+                // brugerens indput gemmes i userGuess som er defineret i denne sværhedsgrads primære variabler
                 userGuess = Console.ReadLine();
+                // her konverterer jeg userGuess fra string til Integer og gemmer indputtet i userGuessInteger
+                // derudover bliver der også vurderet på om konverteringen lykkedes og det bliver gemt i userInput som er en bool
                 bool userInput= int.TryParse(userGuess, out int userGuessInteger);
-
+                // her er en if statement som kører en switch case hvis konverteringen lykkedes
                 if (userInput == true)
-                {
+                {   
                     if (userGuessInteger == randomNumber)
                     {
+                        // her er en if statement som køres hvis brugeren indtaster det rigtige svar og dermed bryder while loopet fordi isCorrect bliver lavet om til true
+                        // dette betyde også at brugeren har besejret sværhedsgraden
                         Console.Clear();
                         Console.WriteLine(" ==== TILLYKKE DU HAR VUNDET ==== ");
                         isCorrect = true;
                     }
                     else if (userGuessInteger < randomNumber)
-                    {
+                    { // denne else if statement aktiveres hvis spillerens indput er lavere end det genererede tal
                         Console.WriteLine("Dit gæt er for lavt");
                     }
                     else if (userGuessInteger > randomNumber)
-                    {
+                    { // denne else if statement aktiveres hvis spillerens indput er højere end det genererede tal
                         Console.WriteLine("Dit gæt er for højt");
                     }
                     if (isCorrect == false)
-                    {
+                    { // her er en if statement som aktiveres hvis spillerens indput er forkert
+                      // dette medfører at variablen tries stiger med 1
                         tries++;
                     }
                     if (maxTries == tries)
-                    {
+                    { // her er en if statement som aktiveres hvis spilleren har brugt for mange forsøg som er når tries når samme antal som maxTries
+                      // dette medfører at man har tabt spillet og dermed bryder ud af while loopet
                         Console.Clear();
                         Console.WriteLine("Du har tabt");
                         break;
                     }
 
-                }
+                } // her er en else if statement som køres hvis brugeren ikke skriver et tal, herefter vil spilleren blive givet et forsøg mere på at skrive et tal
                 else if (userInput == false)
                 {
                     Console.WriteLine("Du skal skrive et tal");
                 }
 
             }
+            // når man er brudt ud af while loopet, bliver man bedt om at trykke på en knap for at vende tilbage til spilmenuen
             Console.WriteLine("Tryk på valgfri knap for at vende tilbage til menu");
             Console.ReadKey();
             Console.Clear();
