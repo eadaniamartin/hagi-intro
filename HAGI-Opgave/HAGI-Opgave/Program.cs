@@ -675,7 +675,7 @@ namespace HAGI_Opgave
             return false;
         }
 
-        static bool IsInsideBounds(int row, int col, int maxRows, int maxCols)
+        static bool IsInsideBounds(int row, int col, byte maxRows, byte maxCols)
         {
             return row >= 0 && row < maxRows && col >= 0 && col < maxCols;
         }
@@ -698,7 +698,8 @@ namespace HAGI_Opgave
 
                 if (IsInsideBounds(newRow, newCol, maxRowSize, maxColSize))
                 {
-                    if (gridArray[newRow, newCol] == GridType.Mine)
+                    //if (gridArray[newRow, newCol] == GridType.Mine)
+                    if(CheckIfPositionIsMine(gridArray, (byte)newRow, (byte)newCol))
                         countAmountOfMines++;
                 }
             }
