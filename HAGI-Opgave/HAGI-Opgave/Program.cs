@@ -16,16 +16,16 @@ namespace HAGI_Opgave
         {
             // Fælles kodedel
 
-            bool stopProgrammet = false;
+            bool keepProgramRunning = true;
             // Her kommer et while loop som vurderer om den indtastede værdi er korrekt eller falsk
-            while (stopProgrammet == false)
+            while (keepProgramRunning == true)
             {
                 // HER KOMMER TEKST TIL MENUEN I KONSOLEN
                 Console.WriteLine("=== MENU ===");
                 Console.WriteLine("1. Marcus' Spil");
                 Console.WriteLine("2. Martins Spil");
-
                 Console.WriteLine("3. Afslut programmet");
+
                 // VI GEMMER BRUGERENS RESPONS FRA KONSOLEN I EN STRING
                 string userResponse = Console.ReadLine();
                 // isNumber er en bool, som fortæller om TryParse af stringen userResponse kan laves til en integer, derudover får vi også en integer kaldet userResponseInteger
@@ -43,17 +43,17 @@ namespace HAGI_Opgave
                             Console.Clear();
                             MartinsGame();
                             break;
-                        default:
-                            Console.WriteLine("Tallet er ikke 1 eller 2");
-                            break;
                         case 3:
                             Console.Clear();
                             Console.WriteLine("Programmet er slut");
-                            stopProgrammet = true;
+                            keepProgramRunning = false;
+                            break;
+                        default:
+                            Console.WriteLine("Tallet er ikke 1 eller 2");
                             break;
                     }
                 }
-                // Her er en else statement som køres hvis det ikke er et tal
+                // Her er en else statement som køres, hvis userResponse ikke er et tal
                 else
                 {
                     Console.WriteLine("Beklager, dit input er ikke et tal");
@@ -317,6 +317,23 @@ namespace HAGI_Opgave
         }
 
 
+
+
+
+
+
+
+
+
+
+
+        // NEDENFOR ER AL MARTINS KODE DEL
+        enum GridType
+        {
+            None,
+            Mine
+        }
+
         static void MartinsGame()
         {
             bool keepRunningMartinsGame = true;
@@ -327,14 +344,8 @@ namespace HAGI_Opgave
 
                 Console.WriteLine("| Martins Funhouse");
                 Console.WriteLine("|------------------------------------------------");
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("| 1. Hangman (Gul - Under udvikling)");
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("| 2. Minesweeper (Rød - Færdig)");
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("| 3. Battleship (Gul - Under udvikling)");
-                Console.WriteLine("| 4. Rock, Paper, Scissor (Gul - Under udvikling)");
-                Console.WriteLine("| 5. Tic-Tac-Toe (Gul - Under udvikling)");
+                Console.WriteLine("| 1. Minesweeper (Rød - Færdig)");
                 Console.ForegroundColor = originalConsoleForegroundColor;
                 Console.WriteLine("| 6. Exit");
 
@@ -347,17 +358,7 @@ namespace HAGI_Opgave
                         {
                             case 1:
                                 Console.Clear();
-                                MartinsGameHangman();
-                                break;
-                            case 2:
-                                Console.Clear();
-                                MineSweeper();
-                                break;
-                            case 3:
-                                break;
-                            case 4:
-                                break;
-                            case 5:
+                                Minesweeper();
                                 break;
                             case 6:
                                 keepRunningMartinsGame = false;
@@ -375,97 +376,7 @@ namespace HAGI_Opgave
             }
         }
 
-        static void MartinsGameHangman()
-        {
-            
-            Random random = new Random();
-            int randomNumber = random.Next(0, 20);
-
-            Console.Clear();
-            Console.WriteLine("Welcome to Hangman");
-
-            string[] wordsArray = {
-                "hospitalsseng",    // 0
-                "skattejagt",       // 1
-                "flyvemaskine",     // 2
-                "flagstang",        // 3
-                "lynlås",           // 4
-                "vinterjakke",      // 5
-                "stjerneskud",      // 6
-                "computerspil",     // 7
-                "cirkusklovn",      // 8
-                "brødrister",       // 9
-                "vinduesramme",     // 10
-                "teaterstykke",     // 11
-                "lommelygte",       // 12
-                "postkasse",        // 13
-                "sommerfugl",       // 14
-                "fødselsdag",       // 15
-                "køleskab",         // 16
-                "skrivebord",       // 17
-                "svømmehal",        // 18
-                "kaffekande"        // 19
-            };
-
-
-            Console.WriteLine(randomNumber);
-            Console.WriteLine(wordsArray[randomNumber]);
-
-
-
-            MartinsGameHangmanDraw(wordsArray[randomNumber]);
-
-
-
-
-
-
-            Console.ReadLine();
-        }
-
-        static char MartinsGameHangmanPromptUserChar()
-        {
-            //while (true) {
-            //    ConsoleKeyInfo key = Console.ReadKey();
-            //    char charGuess = key.KeyChar;
-            //    bool isAcceptedLetterType = char.IsLetter(charGuess);
-
-            //    if (isAcceptedLetterType)
-            //    {
-            //        Console.WriteLine($"\nCharacter guess: {charGuess}");
-            //        return 
-
-            //    }
-
-            //}
-            char dwadd = Convert.ToChar("d");
-            return dwadd;
-        }
-
-        static void MartinsGameHangmanDraw(string word)
-        {
-            MartinsGameHangmanDrawHangman();
-            MartinsGameHangmanDrawWordPlacings(word);
-        }
-
-        static void MartinsGameHangmanDrawHangman()
-        {
-            Console.WriteLine(@"   ________  ");
-            Console.WriteLine(@"   |    \ |  ");
-            Console.WriteLine(@"   O     \|  ");
-            Console.WriteLine(@"  /|\     |  ");
-            Console.WriteLine(@"  / \     |  ");
-            Console.WriteLine(@"          |  ");
-            Console.WriteLine(@"-------------");
-        }
-
-        enum GridType
-        {
-            None,
-            Mine
-        }
-
-        static void MineSweeper()
+        static void Minesweeper()
         {
             byte gameGridRows = 20;
             byte gameGridCols = 20;
@@ -479,7 +390,7 @@ namespace HAGI_Opgave
             bool[,] gridVisible = new bool[gameGridRows, gameGridCols];
             byte[,] gridValue = new byte[gameGridRows, gameGridCols];
 
-            DistributeMinesEvenly(gridArrayBoard, gameAmountOfMines, gameGridRows, gameGridCols);
+            DistributeMinesRandomly(gridArrayBoard, gameAmountOfMines, gameGridRows, gameGridCols);
             DrawMinesweeperBoard(gridArrayBoard, boardFieldsLeft, boardFieldsTaken, gameAmountOfMines);
 
             while(!gameIsDone && !dead)
@@ -493,24 +404,30 @@ namespace HAGI_Opgave
                 // også abstracted fra redraw.
                 SetGridPositionVisibility(gridVisible, true, userCoordinate.row, userCoordinate.col);
 
-                boardFieldsLeft--;
-                boardFieldsTaken++;
                 if (!positionIsVisible && !positionIsAMine)
                 {
                     byte numberOfMinesAroundPosition = CheckSurroundingPositions(gridArrayBoard, userCoordinate.row, userCoordinate.col, gameGridRows, gameGridCols);
+                    boardFieldsLeft--;
+                    boardFieldsTaken++;
                     RedrawMinesweeperBoard(gridArrayBoard, userCoordinate, numberOfMinesAroundPosition, gridVisible, gridValue, gameGridRows, gameGridCols, positionIsAMine, boardFieldsLeft, boardFieldsTaken, gameAmountOfMines);
                 }
                 else if(positionIsAMine)
                 {
                     dead = true;
                     gameIsDone = true;
+                    boardFieldsLeft--;
+                    boardFieldsTaken++;
                     byte numberOfMinesAroundPosition = CheckSurroundingPositions(gridArrayBoard, userCoordinate.row, userCoordinate.col, gameGridRows, gameGridCols);
                     RedrawMinesweeperBoard(gridArrayBoard, userCoordinate, numberOfMinesAroundPosition, gridVisible, gridValue, gameGridRows, gameGridCols, positionIsAMine, boardFieldsLeft, boardFieldsTaken, gameAmountOfMines);
                     Console.WriteLine("You died!");
                     Console.WriteLine("Press any key to continue back to menu");
                     Console.ReadKey();
                 }
-                else if(boardFieldsLeft == gameAmountOfMines && dead == false)
+                else
+                {
+                    Console.WriteLine("Please choose a position that hasn't been chosen before");
+                }
+                if(boardFieldsLeft == gameAmountOfMines && dead == false)
                 {
                     gameIsDone = true;
                     byte numberOfMinesAroundPosition = CheckSurroundingPositions(gridArrayBoard, userCoordinate.row, userCoordinate.col, gameGridRows, gameGridCols);
@@ -519,14 +436,10 @@ namespace HAGI_Opgave
                     Console.WriteLine("Press any key to continue back to menu");
                     Console.ReadKey();
                 }
-                else
-                {
-                    Console.WriteLine("Please choose a position that hasn't been chosen before");
-                }
             }
         }
 
-        static void DistributeMinesEvenly(GridType[,] board, byte amountOfMines, byte maxRows, byte maxCols)
+        static void DistributeMinesRandomly(GridType[,] board, byte amountOfMines, byte maxRows, byte maxCols)
         {
             Random random = new Random();
             for (int i = 0; i < amountOfMines; i++)
@@ -559,7 +472,7 @@ namespace HAGI_Opgave
                 
                 if (userRowResponseIsNumber)
                 {
-                    if (userRowNumber >= 0 & userRowNumber <= (rows-1))
+                    if (userRowNumber >= 0 && userRowNumber <= (rows-1))
                     {
                         break;
                     }
@@ -580,7 +493,7 @@ namespace HAGI_Opgave
                 bool userColResponseIsNumber = byte.TryParse(userColResponse, out userColNumber);
                 if(userColResponseIsNumber)
                 {
-                    if(userColNumber >= 0 & userColNumber <= (cols-1))
+                    if(userColNumber >= 0 && userColNumber <= (cols-1))
                     {
                         break;
                     }
@@ -767,7 +680,6 @@ namespace HAGI_Opgave
             return row >= 0 && row < maxRows && col >= 0 && col < maxCols;
         }
 
-
         static byte CheckSurroundingPositions(GridType[,] gridArray, byte row, byte col, byte maxRowSize, byte maxColSize)
         {
             byte countAmountOfMines = 0;
@@ -791,15 +703,6 @@ namespace HAGI_Opgave
                 }
             }
             return countAmountOfMines;
-        }
-
-        static void MartinsGameHangmanDrawWordPlacings(string word)
-        {
-            for (int i = 0; i < word.Length; i++)
-            {
-                Console.Write(" _");
-            }
-            Console.Write(" \n\n");
         }
 
     }
