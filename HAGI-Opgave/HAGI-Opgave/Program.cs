@@ -191,7 +191,7 @@ namespace HAGI_Opgave
         }
 
         static void SecondDifficultyMarcusGame()
-        {
+        {   // Her er sværhedsgradens primære variabler
             Random random = new Random();
             int randomNumber = random.Next(1, 51);
             string userGuess;
@@ -200,54 +200,61 @@ namespace HAGI_Opgave
 
 
             bool isCorrect = false;
-
+            // Her er et while loop som sørger for at så længe der kommer forkert svar fra spilleren, så kører den igen
             while (isCorrect == false)
             {
                 Console.WriteLine($"Du har {maxTries} forsøg. Du har brugt {tries} forsøg");
                 Console.WriteLine(" = Gæt et tal mellem 1-50 = ");
+                // brugerens indput gemmes i userGuess som er defineret i denne sværhedsgrads primære variabler
                 userGuess = Console.ReadLine();
+                // her konverterer jeg userGuess fra string til Integer og gemmer indputtet i userGuessInteger
+                // derudover bliver der også vurderet på om konverteringen lykkedes og det bliver gemt i userInput som er en bool
                 bool userInput = int.TryParse(userGuess, out int userGuessInteger);
-
+                // her er en if statement som kører en switch case hvis konverteringen lykkedes
                 if (userInput == true)
                 {
                     if (userGuessInteger == randomNumber)
                     {
+                        // her er en if statement som køres hvis brugeren indtaster det rigtige svar og dermed bryder while loopet fordi isCorrect bliver lavet om til true
+                        // dette betyde også at brugeren har besejret sværhedsgraden
                         Console.Clear();
                         Console.WriteLine(" ==== TILLYKKE DU HAR VUNDET ==== ");
                         isCorrect = true;
                     }
                     else if (userGuessInteger < randomNumber)
-                    {
+                    {   // denne else if statement aktiveres hvis spillerens indput er lavere end det genererede tal
                         Console.WriteLine("Dit gæt er for lavt");
                     }
                     else if (userGuessInteger > randomNumber)
-                    {
+                    {   // denne else if statement aktiveres hvis spillerens indput er højere end det genererede tal
                         Console.WriteLine("Dit gæt er for højt");
                     }
                     if (isCorrect == false)
-                    {
+                    {   // her er en if statement som aktiveres hvis spillerens indput er forkert
+                        // dette medfører at variablen tries stiger med 1
                         tries++;
                     }
                     if (maxTries == tries)
-                    {
+                    {   // her er en if statement som aktiveres hvis spilleren har brugt for mange forsøg som er når tries når samme antal som maxTries
+                        // dette medfører at man har tabt spillet og dermed bryder ud af while loopet
                         Console.Clear();
                         Console.WriteLine("Du har tabt");
                         break;
                     }
-                }
+                }   // her er en else if statement som køres hvis brugeren ikke skriver et tal, herefter vil spilleren blive givet et forsøg mere på at skrive et tal
                 else if (userInput == false)
                 {
                     Console.WriteLine("Du skal skrive et tal");
                 }
 
-            }
+            }   // når man er brudt ud af while loopet, bliver man bedt om at trykke på en knap for at vende tilbage til spilmenuen
             Console.WriteLine("Tryk på valgfri knap for at vende tilbage til menu");
             Console.ReadKey();
             Console.Clear();
         }
 
         static void ThirdDifficultyMarcusGame()
-        {
+        {   // Her er sværhedsgradens primære variabler
             Random random = new Random();
             int randomNumber = random.Next(1, 101);
             string userGuess;
@@ -256,47 +263,54 @@ namespace HAGI_Opgave
 
 
             bool isCorrect = false;
-
+            // Her er et while loop som sørger for at så længe der kommer forkert svar fra spilleren, så kører den igen
             while (isCorrect == false)
             {
                 Console.WriteLine($"Du har {maxTries} forsøg. Du har brugt {tries} forsøg");
                 Console.WriteLine(" = Gæt et tal mellem 1-100 = ");
+                // brugerens indput gemmes i userGuess som er defineret i denne sværhedsgrads primære variabler
                 userGuess = Console.ReadLine();
+                // her konverterer jeg userGuess fra string til Integer og gemmer indputtet i userGuessInteger
+                // derudover bliver der også vurderet på om konverteringen lykkedes og det bliver gemt i userInput som er en bool
                 bool userInput = int.TryParse(userGuess, out int userGuessInteger);
-
+                // her er en if statement som kører en switch case hvis konverteringen lykkedes
                 if (userInput == true)
                 {
                     if (userGuessInteger == randomNumber)
                     {
+                        // her er en if statement som køres hvis brugeren indtaster det rigtige svar og dermed bryder while loopet fordi isCorrect bliver lavet om til true
+                        // dette betyde også at brugeren har besejret sværhedsgraden
                         Console.Clear();
                         Console.WriteLine(" ==== TILLYKKE DU HAR VUNDET ==== ");
                         isCorrect = true;
                     }
                     else if (userGuessInteger < randomNumber)
-                    {
+                    {   // denne else if statement aktiveres hvis spillerens indput er lavere end det genererede tal
                         Console.WriteLine("Dit gæt er for lavt");
                     }
                     else if (userGuessInteger > randomNumber)
-                    {
+                    {   // denne else if statement aktiveres hvis spillerens indput er højere end det genererede tal
                         Console.WriteLine("Dit gæt er for højt");
                     }
                     if (isCorrect == false)
-                    {
+                    {   // her er en if statement som aktiveres hvis spillerens indput er forkert
+                        // dette medfører at variablen tries stiger med 1
                         tries++;
                     }
                     if (maxTries == tries)
-                    {
+                    {   // her er en if statement som aktiveres hvis spilleren har brugt for mange forsøg som er når tries når samme antal som maxTries
+                        // dette medfører at man har tabt spillet og dermed bryder ud af while loopet
                         Console.Clear();
                         Console.WriteLine("Du har tabt");
                         break;
                     }
-                }
+                }   // her er en else if statement som køres hvis brugeren ikke skriver et tal, herefter vil spilleren blive givet et forsøg mere på at skrive et tal
                 else if (userInput == false)
                 {
                     Console.WriteLine("Du skal skrive et tal");
                 }
 
-            }
+            }   // når man er brudt ud af while loopet, bliver man bedt om at trykke på en knap for at vende tilbage til spilmenuen
             Console.WriteLine("Tryk på valgfri knap for at vende tilbage til menu");
             Console.ReadKey();
             Console.Clear();
